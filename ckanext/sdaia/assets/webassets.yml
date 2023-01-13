@@ -1,0 +1,14 @@
+# sdaia-js:
+#   filter: rjsmin
+#   output: ckanext-sdaia/%(version)s-sdaia.js
+#   contents:
+#     - js/sdaia.js
+#   extra:
+#     preload:
+#       - base/main
+
+# sdaia-css:
+#   filter: cssrewrite
+#   output: ckanext-sdaia/%(version)s-sdaia.css
+#   contents:
+#     - css/sdaia.css
