@@ -7,8 +7,7 @@
 #     preload:
 #       - base/main
 
-# sdaia-css:
-#   filter: cssrewrite
-#   output: ckanext-sdaia/%(version)s-sdaia.css
-#   contents:
-#     - css/sdaia.css
+sdaia-css:
+  output: sdaia/sdaia.css
+  contents:
+    - test.css
