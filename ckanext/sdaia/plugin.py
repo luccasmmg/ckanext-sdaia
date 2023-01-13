@@ -2,6 +2,9 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import Blueprint, render_template
 
+def group_create(context, data_dict=None):
+    return {'success': False, 'msg': 'No one is allowed to create groups'}
+
 @toolkit.chained_action
 @toolkit.side_effect_free
 def package_search(original_action, context, data_dict):
@@ -17,6 +20,7 @@ class SdaiaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IAuthFunctions)
 
     # IConfigurer
     def update_config(self, config_):
@@ -43,4 +47,10 @@ class SdaiaPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             'package_search': package_search,
+        }
+
+    #IAuthActions
+    def get_auth_functions(self):
+        return {
+            'group_create': group_create,
         }
