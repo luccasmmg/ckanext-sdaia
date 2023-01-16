@@ -16,11 +16,12 @@ def hello_world():
     '''A simple view function'''
     return "Hello World, this is my first ckan extension"
 
-class SdaiaPlugin(plugins.SingletonPlugin):
+class SdaiaPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(plugins.IDatasetForm)
 
     # IConfigurer
     def update_config(self, config_):
@@ -49,8 +50,35 @@ class SdaiaPlugin(plugins.SingletonPlugin):
             'package_search': package_search,
         }
 
-    #IAuthActions
+    #IAuthActionS
     def get_auth_functions(self):
         return {
             'group_create': group_create,
         }
+
+    def update_package_schema(self):
+        schema = super(SdaiaPlugin, self).update_package_schema()
+        schema.update({
+            'custom_text_sdaia': [toolkit.get_validator('ignore_missing'),
+                            toolkit.get_converter('convert_to_extras')]
+        })
+        return schema
+
+    def show_package_schema(self):
+        schema = super(SdaiaPlugin, self).show_package_schema()
+        schema.update({
+            'custom_text_sdaia': [toolkit.get_converter('convert_from_extras'),
+                            toolkit.get_validator('ignore_missing')]
+        })
+        return schema
+
+    def is_fallback(self):
+        # Return True to register this plugin as the default handler for
+        # package types not handled by any other IDatasetForm plugin.
+        return True
+
+    def package_types(self):
+        # This plugin doesn't handle any special package types, it just
+        # registers itself as the default (above).
+        return []
+

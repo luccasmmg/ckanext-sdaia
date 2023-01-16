@@ -1,0 +1,5 @@
+{% ckan_extends %}
+
+{% block package_basic_fields_custom %}
+  {{ form.input('custom_text_sdaia', label=_('Custom Text Sdaia'), id='field-custom_text_sdaia', placeholder=_('Something'), value=data.custom_text_sdaia, error=errors.custom_text_sdaia, classes=['control-medium']) }}
+{% endblock %}
