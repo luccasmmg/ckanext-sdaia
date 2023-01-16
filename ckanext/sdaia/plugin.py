@@ -1,5 +1,6 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+from ckan.common import config
 from flask import Blueprint, render_template
 
 def group_create(context, data_dict=None):
@@ -14,10 +15,11 @@ def package_search(original_action, context, data_dict):
 
 def hello_world():
     '''A simple view function'''
-    return "Hello World, this is my first ckan extension"
+    return config.get('ckanext.sdaia.hello_message') + ", this is my first ckan extension"
 
 class SdaiaPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
+    plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IAuthFunctions)
@@ -81,4 +83,15 @@ class SdaiaPlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm):
         # This plugin doesn't handle any special package types, it just
         # registers itself as the default (above).
         return []
+
+    def configure(self, config):
+        # Certain config options must exists for the plugin to work. Raise an
+        # exception if they're missing.
+        missing_config = "{0} is not configured. Please amend your .ini file."
+        config_options = (
+            'ckanext.sdaia.hello_message',
+        )
+        for option in config_options:
+            if not config.get(option, None):
+                raise RuntimeError(missing_config.format(option))
 
